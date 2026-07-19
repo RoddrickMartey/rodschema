@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip"
 import "./index.css"
 import App from "./App.tsx"
 import { ThemeProvider } from "@/components/theme-provider.tsx"
+import "@xyflow/react/dist/style.css"
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

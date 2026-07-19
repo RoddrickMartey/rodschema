@@ -7,6 +7,8 @@ import { useCanvasStore } from "./canvasStore"
 import { projectStorage } from "@/lib/storage/projectStorage"
 import { toCanvasState, fromCanvasState } from "@/lib/canvas/canvasConverters"
 
+const LAST_PROJECT_KEY = "rodschema:last-project-id"
+
 type ProjectStore = {
   currentProjectId: string | null
   currentProjectName: string | null
@@ -21,6 +23,9 @@ type ProjectStore = {
   renameProject: (id: string, name: string) => Promise<void>
   deleteProject: (id: string) => Promise<void>
   markDirty: () => void
+  // Attempts to reopen whatever project was open when the page was last
+  // reloaded — called once on app mount
+  restoreLastProject: () => Promise<void>
 }
 
 export const useProjectStore = create<ProjectStore>((set, get) => ({
@@ -51,6 +56,7 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
       currentProjectName: project.name,
       isDirty: false,
     })
+    localStorage.setItem(LAST_PROJECT_KEY, project.id)
     await get().refreshProjectList()
   },
 
@@ -64,6 +70,7 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
       currentProjectName: project.name,
       isDirty: false,
     })
+    localStorage.setItem(LAST_PROJECT_KEY, project.id)
   },
 
   saveCurrentProject: async () => {
@@ -88,9 +95,25 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
     if (get().currentProjectId === id) {
       useCanvasStore.getState().resetCanvas()
       set({ currentProjectId: null, currentProjectName: null })
+      localStorage.removeItem(LAST_PROJECT_KEY)
     }
     await get().refreshProjectList()
   },
 
   markDirty: () => set({ isDirty: true }),
+
+  restoreLastProject: async () => {
+    const lastId = localStorage.getItem(LAST_PROJECT_KEY)
+    if (!lastId) return
+
+    // Confirm the project still actually exists before trying to open it —
+    // it may have been deleted since the last session
+    const project = await projectStorage.getProject(lastId)
+    if (!project) {
+      localStorage.removeItem(LAST_PROJECT_KEY)
+      return
+    }
+
+    await get().openProject(lastId)
+  },
 }))

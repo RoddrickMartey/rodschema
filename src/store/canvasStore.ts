@@ -3,7 +3,7 @@ import { create } from "zustand"
 import type { OnNodesChange, OnEdgesChange, Viewport } from "@xyflow/react"
 import { applyNodeChanges, applyEdgeChanges } from "@xyflow/react"
 import type { TableNode, RelationEdge } from "@/types/reactflow.types"
-import type { Table, Field } from "@/types/schema.types"
+import type { Table, Field, Relation } from "@/types/schema.types"
 
 type CanvasStore = {
   nodes: TableNode[]
@@ -28,6 +28,8 @@ type CanvasStore = {
   ) => void
   deleteField: (tableId: string, fieldId: string) => void
   addRelation: (edge: RelationEdge) => void
+  updateRelation: (relationId: string, updates: Partial<Relation>) => void
+  flipRelation: (relationId: string) => void
   deleteRelation: (relationId: string) => void
   selectNode: (nodeId: string | null) => void
 
@@ -118,6 +120,38 @@ export const useCanvasStore = create<CanvasStore>((set, get) => ({
     }),
 
   addRelation: (edge) => set({ edges: [...get().edges, edge] }),
+
+  updateRelation: (relationId, updates) =>
+    set({
+      edges: get().edges.map((e) =>
+        e.id === relationId
+          ? { ...e, data: { relation: { ...e.data!.relation, ...updates } } }
+          : e
+      ),
+    }),
+
+  // Swaps which side is the FK-holder (from) vs the referenced side (to) —
+  // has to flip both the edge's own source/target/handles (React Flow's
+  // fields, which control the arrow's visual direction) AND the underlying
+  // relation.from/to (which the generators read), or the two would drift
+  // out of sync with each other.
+  flipRelation: (relationId) =>
+    set({
+      edges: get().edges.map((e) => {
+        if (e.id !== relationId || !e.data) return e
+        const { relation } = e.data
+        return {
+          ...e,
+          source: e.target,
+          target: e.source,
+          sourceHandle: e.targetHandle,
+          targetHandle: e.sourceHandle,
+          data: {
+            relation: { ...relation, from: relation.to, to: relation.from },
+          },
+        }
+      }),
+    }),
 
   deleteRelation: (relationId) =>
     set({ edges: get().edges.filter((e) => e.id !== relationId) }),

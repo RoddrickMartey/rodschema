@@ -1,5 +1,6 @@
 import type { CanvasState } from "@/types/schema.types"
 import { buildFieldLookup, type ValidationIssue } from "./compiler.types"
+import { detectDuplicateNames } from "./duplicateNames"
 
 /**
  * Detects circular foreign key dependencies by treating relations as a
@@ -131,5 +132,6 @@ export function validateCanvasState(
   return [
     ...detectCircularForeignKeys(canvasState),
     ...detectTypeMismatches(canvasState),
+    ...detectDuplicateNames(canvasState),
   ]
 }
