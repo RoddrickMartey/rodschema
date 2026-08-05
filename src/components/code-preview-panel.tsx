@@ -93,7 +93,7 @@ export function CodePreviewPanel() {
               </div>
               <div className="h-125 min-h-0 p-2 pt-0">
                 <ScrollArea className="h-full w-full rounded-md border p-3">
-                  <pre className="font-mono text-xs">
+                  <pre className="font-mono text-xs wrap-break-word whitespace-pre-wrap">
                     <code>{output[tab.value]}</code>
                   </pre>
                 </ScrollArea>
