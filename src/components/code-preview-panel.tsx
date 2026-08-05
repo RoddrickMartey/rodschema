@@ -33,11 +33,10 @@ export function CodePreviewPanel() {
   const { output, issues, hasErrors, isCompiling } = useCompiledSchema()
 
   return (
-    <div className="flex h-full flex-col border-l bg-background">
-      {/* Validation issues — shown whenever any exist, regardless of whether
-          generation succeeded, so warnings aren't hidden once errors clear */}
+    <div className="flex h-full min-h-0 flex-col border-l bg-background">
+      {/* Validation issues section — scrolls internally if many issues exist */}
       {issues.length > 0 && (
-        <div className="border-b p-3">
+        <div className="max-h-36 shrink-0 overflow-y-auto border-b p-3">
           <ul className="space-y-1.5">
             {issues.map((issue, i) => (
               <li
@@ -65,9 +64,9 @@ export function CodePreviewPanel() {
       ) : (
         <Tabs
           defaultValue="sql"
-          className="flex flex-1 flex-col overflow-hidden"
+          className="flex min-h-0 flex-1 flex-col overflow-hidden"
         >
-          <div className="flex items-center justify-between border-b px-2 py-1">
+          <div className="flex shrink-0 items-center justify-between border-b px-2 py-1">
             <TabsList>
               {TABS.map((tab) => (
                 <TabsTrigger key={tab.value} value={tab.value}>
@@ -87,16 +86,18 @@ export function CodePreviewPanel() {
             <TabsContent
               key={tab.value}
               value={tab.value}
-              className="flex-1 overflow-hidden"
+              className="mt-0 flex min-h-0 flex-1 flex-col overflow-hidden data-[state=inactive]:hidden"
             >
-              <div className="flex justify-end px-2 pt-1">
+              <div className="flex shrink-0 justify-end px-2 pt-1">
                 <CopyButton text={output[tab.value]} />
               </div>
-              <ScrollArea className="h-full px-3 pb-3">
-                <pre className="text-xs">
-                  <code>{output[tab.value]}</code>
-                </pre>
-              </ScrollArea>
+              <div className="h-125 min-h-0 p-2 pt-0">
+                <ScrollArea className="h-full w-full rounded-md border p-3">
+                  <pre className="font-mono text-xs">
+                    <code>{output[tab.value]}</code>
+                  </pre>
+                </ScrollArea>
+              </div>
             </TabsContent>
           ))}
         </Tabs>

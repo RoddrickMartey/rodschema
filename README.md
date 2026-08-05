@@ -10,11 +10,11 @@ Designed for speed and power, this tool eliminates manual schema writing by turn
 
 This project is a fully client-side single-page application. There's no backend — all schema design, code generation, and persistence happen locally in the browser, and projects are shared via export rather than accounts or server storage.
 
-* **Frontend:** React (powered by Vite) for incredibly fast HMR and lightweight bundles.
-* **Styling:** Tailwind CSS + shadcn/ui for a clean, developer-focused workspace UI.
-* **Canvas & Graph:** [React Flow](https://reactflow.dev/) powers the node/edge graph — draggable table nodes, connection handles, panning, and zooming — with custom node types and validation-aware connection rules layered on top.
-* **Compiler Engine:** A framework-agnostic set of pure TypeScript functions (parser, generators, validator) that turn the visual graph's JSON representation into SQL, Prisma, or SQLAlchemy — runs entirely client-side, unit-tested independently of any UI.
-* **Persistence:** IndexedDB (via `idb`) for saving multiple named projects locally, with JSON export/import as the mechanism for backup and sharing.
+- **Frontend:** React (powered by Vite) for incredibly fast HMR and lightweight bundles.
+- **Styling:** Tailwind CSS + shadcn/ui for a clean, developer-focused workspace UI.
+- **Canvas & Graph:** [React Flow](https://reactflow.dev/) powers the node/edge graph — draggable table nodes, connection handles, panning, and zooming — with custom node types and validation-aware connection rules layered on top.
+- **Compiler Engine:** A framework-agnostic set of pure TypeScript functions (parser, generators, validator) that turn the visual graph's JSON representation into SQL, Prisma, or SQLAlchemy — runs entirely client-side, unit-tested independently of any UI.
+- **Persistence:** IndexedDB (via `idb`) for saving multiple named projects locally, with JSON export/import as the mechanism for backup and sharing.
 
 ---
 
@@ -24,23 +24,23 @@ This project is a fully client-side single-page application. There's no backend 
 
 Rather than reinventing node dragging and edge routing, the interactive workspace builds on React Flow's battle-tested primitives, extended with:
 
-* Custom table-node components rendering live field lists (name, type, nullability, keys).
-* Validation-aware connection rules — a relationship can be rejected at the moment a user draws it if the underlying types are incompatible.
-* Live-sync between the visual graph and the generated code panel as the graph changes.
+- Custom table-node components rendering live field lists (name, type, nullability, keys).
+- Validation-aware connection rules — a relationship can be rejected at the moment a user draws it if the underlying types are incompatible.
+- Live-sync between the visual graph and the generated code panel as the graph changes.
 
 ### 2. Schema AST (Abstract Syntax Tree) Compiler
 
 The core engine treats the visual layout as a structured data graph. A pure-function compiler maps this graph into multiple developer targets:
 
-* Generates clean, native **SQL DDL** scripts (including strict foreign key constraints and cascade rules).
-* Compiles structured layout JSON into fully typed **Prisma Schemas** or Python **SQLAlchemy Models**.
+- Generates clean, native **SQL DDL** scripts (including strict foreign key constraints and cascade rules).
+- Compiles structured layout JSON into fully typed **Prisma Schemas** or Python **SQLAlchemy Models**.
 
 ### 3. Real-Time Relationship Validation
 
 Built-in linting prevents bad database design before it happens. The app analyzes table connections on the fly to flag:
 
-* Circular dependencies or infinite foreign key loops.
-* Data type mismatches between a Primary Key and a Foreign Key.
+- Circular dependencies or infinite foreign key loops.
+- Data type mismatches between a Primary Key and a Foreign Key.
 
 ---
 
@@ -76,11 +76,11 @@ The application represents the canvas state as a unified JSON object, making it 
 
 ## 🚀 Features
 
-* **Interactive Node Architecture:** Drag, drop, create, and edit database tables on an infinite grid canvas.
-* **Split-Screen Live Code Preview:** Watch your SQL or ORM schema update instantly side-by-side as you tweak the visual layout.
-* **Smart Canvas Utilities:** Zoom in/out, pan, and keyboard controls for navigating large diagrams.
-* **Local Project Storage:** Save and switch between multiple named schema projects, stored locally via IndexedDB — no account needed.
-* **One-Click Export:** Download the schema as a standalone JSON state file, raw SQL, or your preferred ORM config — the primary way to back up or share a project.
+- **Interactive Node Architecture:** Drag, drop, create, and edit database tables on an infinite grid canvas.
+- **Split-Screen Live Code Preview:** Watch your SQL or ORM schema update instantly side-by-side as you tweak the visual layout.
+- **Smart Canvas Utilities:** Zoom in/out, pan, and keyboard controls for navigating large diagrams.
+- **Local Project Storage:** Save and switch between multiple named schema projects, stored locally via IndexedDB — no account needed.
+- **One-Click Export:** Download the schema as a standalone JSON state file, raw SQL, or your preferred ORM config — the primary way to back up or share a project.
 
 ---
 
@@ -88,19 +88,51 @@ The application represents the canvas state as a unified JSON object, making it 
 
 ### Prerequisites
 
-* Node.js (v18 or higher)
-* npm or pnpm
+- Node.js (v18 or higher)
+- npm or pnpm
 
 ### Installation
 
 1. Clone the repository:
+
 ```bash
-git clone https://github.com/yourusername/rodschema.git
+git clone https://github.com/RoddrickMartey/rodschema.git
 cd rodschema
 ```
 
-2. Install dependencies and run:
+You can also use the GitHub CLI:
+
+```bash
+gh repo clone RoddrickMartey/rodschema
+cd rodschema
+```
+
+2. Install dependencies and run locally:
+
 ```bash
 npm install
 npm run dev
 ```
+
+3. Build for production and preview the build locally:
+
+```bash
+npm run build
+npm run preview
+```
+
+4. Deploy to Vercel (recommended):
+
+```bash
+# If you don't have the Vercel CLI installed
+npx vercel login
+npx vercel --prod
+# or, if you prefer the installed CLI
+vercel --prod
+```
+
+Notes:
+
+- The project requires Node.js v18 or newer.
+- The production build output is written to the `dist` directory (Vite default).
+- If you use Vercel, the included `vercel.json` is configured for a static build and a SPA rewrite to `index.html`.
