@@ -64,7 +64,7 @@ export function UserFooter() {
           <div
             role="button"
             tabIndex={0}
-            className="flex w-full cursor-pointer items-center gap-2 rounded-md p-2 text-left text-sm select-none hover:bg-sidebar-accent"
+            className="flex w-full cursor-pointer items-center gap-2 rounded-md text-left text-sm select-none hover:bg-sidebar-accent"
           >
             <Avatar className="h-6 w-6">
               <AvatarFallback>{getInitial(name ?? "?")}</AvatarFallback>

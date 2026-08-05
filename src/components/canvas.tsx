@@ -3,7 +3,6 @@ import {
   ReactFlow,
   Background,
   Controls,
-  MarkerType,
   type Connection,
   type IsValidConnection,
 } from "@xyflow/react"
@@ -66,9 +65,6 @@ export function Canvas() {
         sourceHandle: connection.sourceHandle,
         targetHandle: connection.targetHandle,
         type: "relationEdge",
-        // Arrow points at the target — the referenced/parent side — so the
-        // direction of the FK is visible on the canvas, not just in the code
-        markerEnd: { type: MarkerType.ArrowClosed },
         data: {
           relation: {
             id: relationId,

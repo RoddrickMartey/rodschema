@@ -1,4 +1,5 @@
 import { useEffect } from "react"
+import { ReactFlowProvider } from "@xyflow/react"
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
 import { Toolbar } from "@/components/toolbar"
@@ -12,10 +13,8 @@ export function App() {
   const currentProjectId = useProjectStore((s) => s.currentProjectId)
   const restoreLastProject = useProjectStore((s) => s.restoreLastProject)
 
-  // Autosave the open project as the canvas changes
   useProjectAutosave()
 
-  // Reopen whatever project was open last time, once on mount
   useEffect(() => {
     restoreLastProject()
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -23,12 +22,15 @@ export function App() {
 
   return (
     <div className="h-screen w-full">
-      <SidebarProvider defaultOpen={false}>
+      <SidebarProvider>
         <AppSidebar />
         <SidebarInset>
           <main className="flex h-full flex-col">
             {currentProjectId ? (
-              <>
+              // ReactFlowProvider wraps both Toolbar and Canvas — Toolbar's
+              // export button needs useReactFlow() even though it's a
+              // sibling of <ReactFlow>, not a child of it
+              <ReactFlowProvider>
                 <Toolbar />
                 <div className="flex flex-1 overflow-hidden">
                   <div className="flex-1">
@@ -38,7 +40,7 @@ export function App() {
                     <CodePreviewPanel />
                   </div>
                 </div>
-              </>
+              </ReactFlowProvider>
             ) : (
               <EmptyProjectState />
             )}
